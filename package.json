@@ -1,0 +1,25 @@
+{
+  "name": "HouseHunter",
+  "version": "1.0.0",
+  "repository": "git@github.com:Necolo/HouseHunter.git",
+  "author": "Necolo <negko311@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "ts-node src/bin/index.ts && ts-node src/bin/html.ts && open ./result.html",
+    "html": "ts-node src/bin/html.ts && open ./result.html"
+  },
+  "dependencies": {
+    "@types/lowdb": "^1.0.9",
+    "axios": "^0.19.0",
+    "cheerio": "^1.0.0-rc.3",
+    "lowdb": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/cheerio": "^0.22.15",
+    "@types/node": "^13.1.0",
+    "ts-node": "^8.5.4",
+    "tslib": "^1.10.0",
+    "typescript": "^3.7.4"
+  }
+}
