@@ -1,6 +1,5 @@
 import cheerio from 'cheerio';
 import axios from 'axios';
-import superagent from 'superagent';
 import { Filter } from '../filter';
 import { Site } from './type';
 import { Db } from '../db';
