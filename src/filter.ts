@@ -9,12 +9,12 @@ export class Filter {
     public priceRange = [4000, 6500];
     public filterText:FilterText = {
         rooms: {
-            exclude: ['一房', '1房', '一居', '1居', '单间'],
+            exclude: ['一房', '1房', '一居', '1居', '单间', '一室'],
             include: ['两房', '2房', '二居', '两居', '2居', '二房'],
         },
         rentType: {
-            exclude: ['合租', '求租', '次卧', '招室友'],
-            include: [],
+            exclude: ['合租', '求租', '次卧', '招室友', '找室友'],
+            include: ['整租'],
         },
         position: {
             exclude: ['宝安', '龙岗', '龙华', '坂田', '罗湖', '民乐', '白石龙', '西乡', '百鸽笼'],
