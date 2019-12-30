@@ -8,13 +8,15 @@ const validData = Db.read('include');
 const invalidData = Db.read('exclude');
 const tableFields = Object.keys(validData[0] || {});
 
-function writeTable (spec:TableSpec[]) {
+function writeTable (spec:TableSpec[], valid:boolean) {
     return `
         <tr>
             <th>title</th>
         </tr>
         ${spec.map((data) => `<tr>
-            <td><a href=${data.href}>${data.title}</a></td>
+            <td><a href=${data.href}>${data.title}</a> <span
+                class="${valid && 'valid' || 'invalid'}"
+            >${data.notes.join(', ')}</span></td>
         </tr>`).join('')}
     `;
 }
@@ -33,6 +35,13 @@ function run () {
                         border: 1px solid grey;
                         margin: 16px;
                     }
+                    .valid {
+                        color: green;
+                    }
+                    .invalid {
+                        color: red;
+                        text-decoration: line-through;
+                    }
                 </style>
             </head>
             <body>
@@ -40,14 +49,14 @@ function run () {
                     Include:
                     <br />
                     <table>
-                        ${writeTable(validData)}
+                        ${writeTable(validData, true)}
                     </table>
                 </div>
                 <div class="table">
                     Exclude:
                     <br />
                     <table>
-                        ${writeTable(invalidData)}
+                        ${writeTable(invalidData, false)}
                     </table>
                 </div>
                 <script></script>

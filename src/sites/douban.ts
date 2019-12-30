@@ -2,17 +2,17 @@ import cheerio from 'cheerio';
 import axios from 'axios';
 import { Filter } from '../filter';
 import { Site } from './type';
-import { Db } from '../db';
+import { Db, WriteSpec } from '../db';
 import { sleep, getUserAgent } from '../util';
 
 export class Douban implements Site {
     public origin = 'https://www.douban.com';
     public paths = [
         '/group/106955/discussion?start=0',
-        // '/group/szsh/discussion?start=25',
-        // '/group/szsh/discussion?start=30',
-        // '/group/szsh/discussion?start=35',
-        // '/group/szsh/discussion?start=40',
+        '/group/szsh/discussion?start=25',
+        '/group/szsh/discussion?start=30',
+        '/group/szsh/discussion?start=35',
+        '/group/szsh/discussion?start=40',
     ];
 
     public requestConfig = {
@@ -41,35 +41,32 @@ export class Douban implements Site {
     constructor (filter:Filter) {
         this._filter = filter;
     }
-    
+
     public async run () {
         Db.clear('include');
         Db.clear('exclude');
         for (let i = 0; i < this.paths.length; i ++) {
             const data = await this._request(`${this.origin}${this.paths[i]}`);
-            console.log(data);
-            // const $list = cheerio.load(data)
-            // $list('.olt tbody tr').each(async (i, el) => {
-            //     if (i === 0) { return; }
-            //     const titleEl = $list(el).find('.title');
-            //     const href = titleEl.find('a').attr('href');
-            //     const title = titleEl.find('a').attr('title');
-            //     if (href && title) {
-            //         const postPageData = await this._request(href);
-            //         const $post = cheerio.load(postPageData);
-            //         const postContent:string[] = [];
-            //         $post('.topic-richtext p').each((i, el) => {
-            //             postContent.push($post(el).text());
-            //         });
-            //         const valid = this._filter.run(title + ' ' + postContent.join(' '));
-            //         const data = {
-            //             title,
-            //             href,
-            //         };
-            //         console.log(valid, data);
-            //         Db.write(data, valid);
-            //     }
-            // });
+            const $list = cheerio.load(data)
+            $list('.olt tbody tr').each(async (i, el) => {
+                if (i === 0) { return; }
+                const titleEl = $list(el).find('.title');
+                const href = titleEl.find('a').attr('href') || '';
+                const title = titleEl.find('a').attr('title') || '';
+                const filter1 = this._filter.run(title);
+                if (!filter1.valid) {
+                    Db.write({title, href}, filter1);
+                } else if (href && title) {
+                    const postPageData = await this._request(href);
+                    const $post = cheerio.load(postPageData);
+                    const postContent:string[] = [];
+                    $post('.topic-richtext p').each((i, el) => {
+                        postContent.push($post(el).text());
+                    });
+                    const filter2 = this._filter.run(postContent.join(' '));
+                    Db.write({title, href}, filter2);
+                }
+            });
         }
     }
 

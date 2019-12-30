@@ -1,8 +1,16 @@
 import low from 'lowdb';
 import FileSync from 'lowdb/adapters/FileSync';
 import path from 'path';
+import { FilterResult } from './filter';
 
 export type TableSpec = {
+    title:string;
+    href:string;
+    runDate:string;
+    notes:string[];
+}
+
+export type WriteSpec = {
     title:string;
     href:string;
 }
@@ -18,10 +26,11 @@ db.defaults({
 }).write();
 
 export const Db = {
-    write: (spec:TableSpec, include?:boolean) => {
+    write: (spec:WriteSpec, filterResult:FilterResult) => {
         spec['runDate'] = (new Date()).toString();
+        spec['notes'] = filterResult.notes;
 
-        if (!include) {
+        if (!filterResult.valid) {
             (db.get('exclude') as any).push(spec).write();
         } else {
             (db.get('include') as any).push(spec).write();
