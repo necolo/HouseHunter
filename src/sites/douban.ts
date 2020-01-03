@@ -35,7 +35,7 @@ export class Douban implements Site {
         },
     };
 
-    public timeInterval = 500;
+    public timeInterval = [500, 1000];
 
     private _filter:Filter;
     constructor (filter:Filter) {
@@ -43,8 +43,6 @@ export class Douban implements Site {
     }
 
     public async run () {
-        Db.clear('include');
-        Db.clear('exclude');
         for (let i = 0; i < this.paths.length; i ++) {
             const data = await this._request(`${this.origin}${this.paths[i]}`);
             const $list = cheerio.load(data)
@@ -54,9 +52,15 @@ export class Douban implements Site {
                 const href = titleEl.find('a').attr('href') || '';
                 const title = titleEl.find('a').attr('title') || '';
                 const filter1 = this._filter.run(title);
+
+                if (!href) { return; }
+                if (Db.recorded('include', href)) { return; }
+                if (Db.recorded('exclude', href)) { return; }
+
                 if (!filter1.valid) {
                     Db.write({title, href}, filter1);
-                } else if (href && title) {
+                } else if (title) {
+                    const hasRecorded = Db.recorded('include', href);
                     const postPageData = await this._request(href);
                     const $post = cheerio.load(postPageData);
                     const postContent:string[] = [];
@@ -72,9 +76,17 @@ export class Douban implements Site {
 
     private _request (url:string) {
         return new Promise<string>((resolve, reject) => {
-            sleep(this.timeInterval).then(() => {
+            sleep(randomRange(this.timeInterval[0], this.timeInterval[1])).then(() => {
                 axios.get(url, this.requestConfig).then((res) => resolve(res.data)).catch(reject);
             });
         });
     }
+}
+
+function randomPick<T> (a:T[]) : T {
+    return a[Math.floor(Math.random() * a.length)];
+}
+
+function randomRange (min:number, max:number) {
+    return Math.random() * (max - min) + min;
 }

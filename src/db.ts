@@ -6,7 +6,7 @@ import { FilterResult } from './filter';
 export type TableSpec = {
     title:string;
     href:string;
-    runDate:string;
+    runDate:number;
     notes:string[];
 }
 
@@ -25,9 +25,15 @@ db.defaults({
     lastUpdated: (new Date()).toString(),
 }).write();
 
+db._.mixin({
+    timeAfter: function(array, time) {
+        return array.filter((v) => v.runDate > time);
+    }
+})
+
 export const Db = {
     write: (spec:WriteSpec, filterResult:FilterResult) => {
-        spec['runDate'] = (new Date()).toString();
+        spec['runDate'] = Date.now();
         spec['notes'] = filterResult.notes;
 
         if (!filterResult.valid) {
@@ -35,12 +41,19 @@ export const Db = {
         } else {
             (db.get('include') as any).push(spec).write();
         }
-        db.set('lastUpdated', (new Date()).toString());
+        db.set('lastUpdated', Date.now());
     },
     clear: (table:'exclude'|'include') => {
         db.set(table, []).write();
     },
-    read: (table:'exclude'|'include') => {
-        return db.get(table).value() as TableSpec[];
-    }
+    read: (table:'exclude'|'include', timeAfter:number) => {
+        return db.get(table).timeAfter(timeAfter).value() as TableSpec[];
+    },
+    recorded: (table:'exclude'|'include', url:string) => {
+        const found = !!db.get(table).find({href: url}).value();
+        if (found) {
+            db.get(table).find({href: url}).assign({runDate: Date.now()}).write();
+        }
+        return found;
+    },
 }

@@ -9,7 +9,6 @@
     "html": "ts-node src/bin/html.ts && open ./result.html"
   },
   "dependencies": {
-    "@types/lowdb": "^1.0.9",
     "axios": "^0.19.0",
     "cheerio": "^1.0.0-rc.3",
     "lowdb": "^1.0.0"

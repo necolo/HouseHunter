@@ -4,8 +4,10 @@ import { Db, TableSpec } from '../db';
 
 const HTML_FILE = path.join(__dirname, '../../result.html');
 
-const validData = Db.read('include');
-const invalidData = Db.read('exclude');
+const now = new Date();
+const today = new Date(`${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`);
+const validData = Db.read('include', now.getTime() - 10 * 60 * 1000); // 10mins
+const invalidData = Db.read('exclude', 0);
 const tableFields = Object.keys(validData[0] || {});
 
 function writeTable (spec:TableSpec[], valid:boolean) {

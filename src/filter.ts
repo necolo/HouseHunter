@@ -18,21 +18,22 @@ export class Filter {
             include: ['两房', '2房', '二居', '两居', '2居', '二房'],
         },
         rentType: {
-            exclude: ['合租', '求租', '次卧', '室友'],
-            include: ['整租'],
+            exclude: ['合租', '求租', '次卧', '室友', '主卧'],
+            include: ['整租', '房东直租'],
         },
         position: {
-            exclude: ['宝安', '西乡', '坪洲', 
-                '龙岗', '坂田', '布吉', '百鸽笼', '大芬', '丹竹头', 
-                '龙华', '民乐', '白石龙', '深圳北', 
+            exclude: [
+                '宝安', '西乡', '坪洲', '灵芝', '新安', '宝体', '固戍', '后瑞', '翻身',
+                '龙岗', '坂田', '布吉', '百鸽笼', '大芬', '丹竹头', '木棉湾', '六约', '塘坑', '横岗', '永湖', '荷坳', '大运', '爱联', '龙城广场', '南联', '双龙',
+                '龙华', '民乐', '白石龙', '深圳北', '清湖', '上塘', '红山', '长岭破',
                 '罗湖', '大剧院',
             ],
-            include: ['福田', '石厦', '景田', '莲花', '梅林', '上沙', '下沙'],
+            include: ['福田', '石厦', '景田', '莲花', '梅林', '上沙', '下沙', '五和'],
         },
     }
 
     private filterPrice (text:string) : FilterResult {
-        const prices = text.match(/\d{4}/g);
+        const prices = text.match(/[^\d]{1}\d{4}[^\d]{1}/g);
         if (!prices) {
             return {
                 valid: true,
@@ -40,14 +41,17 @@ export class Filter {
             };
         }
         for (let i = 0; i < prices.length; i ++) {
-            const price = +prices[i];
-            if (price > 1980 && price < 2025) { continue; }
-            if (price < 1000) { continue; }
-            if (price < this.priceRange[0] || price > this.priceRange[1]) {
-                return {
-                    valid: true,
-                    notes: ['' + price],
-                };
+            const priceReg = prices[i].match(/\d/g);
+            if (priceReg && priceReg[0]) {
+                const price = +priceReg[0];
+                if (price > 1980 && price < 2025) { continue; }
+                if (price < 1000) { continue; }
+                if (price < this.priceRange[0] || price > this.priceRange[1]) {
+                    return {
+                        valid: false,
+                        notes: ['' + price],
+                    };
+                }
             }
         }
         return {
@@ -57,9 +61,6 @@ export class Filter {
     }
 
     public run (text:string) : FilterResult {
-        const priceFilter = this.filterPrice(text);
-        if (!priceFilter.valid) { return priceFilter; };
-
         const filterKeys = Object.keys(this.filterText);
         for (let i = 0; i < filterKeys.length; i++) {
             const filterObj = this.filterText[filterKeys[i]];
@@ -81,6 +82,10 @@ export class Filter {
                 }
             }
         }
+
+        const priceFilter = this.filterPrice(text);
+        if (!priceFilter.valid) { return priceFilter; };
+
         return {
             valid: true,
             notes: [''],
