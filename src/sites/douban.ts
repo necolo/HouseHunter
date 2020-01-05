@@ -8,11 +8,33 @@ import { sleep, getUserAgent } from '../util';
 export class Douban implements Site {
     public origin = 'https://www.douban.com';
     public paths = [
-        '/group/106955/discussion?start=0',
+        // 深圳租房
+        '/group/szsh/discussion?start=0',
         '/group/szsh/discussion?start=25',
-        '/group/szsh/discussion?start=30',
-        '/group/szsh/discussion?start=35',
-        '/group/szsh/discussion?start=40',
+        '/group/szsh/discussion?start=50',
+        '/group/szsh/discussion?start=75',
+        '/group/szsh/discussion?start=100',
+
+        // 深圳租房团
+        '/group/106955/discussion?start=0',
+        '/group/106955/discussion?start=25',
+        '/group/106955/discussion?start=50',
+        '/group/106955/discussion?start=75',
+        '/group/106955/discussion?start=100',
+
+        // 福田租房
+        '/group/futianzufang/discussion?start=0',
+        '/group/futianzufang/discussion?start=25',
+        '/group/futianzufang/discussion?start=50',
+        '/group/futianzufang/discussion?start=75',
+        '/group/futianzufang/discussion?start=100',
+
+        // 深圳租房
+        // '/group/637628/discussion?start=0',
+        // '/group/637628/discussion?start=25',
+        // '/group/637628/discussion?start=50',
+        // '/group/637628/discussion?start=75',
+        // '/group/637628/discussion?start=100',
     ];
 
     public requestConfig = {
