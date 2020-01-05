@@ -2,6 +2,7 @@ yarn.lock
 yarn-error.log
 db.json
 result.html
+/build
 
 # Logs
 logs

@@ -11,8 +11,8 @@ export type FilterResult = {
 }
 
 export class Filter {
-    public priceRange = [4000, 6500];
-    public filterText:FilterText = {
+    public price = [4000, 6500];
+    public text:FilterText = {
         rooms: {
             exclude: ['一房', '1房', '一居', '1居', '单间', '一室'],
             include: ['两房', '2房', '二居', '两居', '2居', '二房'],
@@ -46,7 +46,7 @@ export class Filter {
                 const price = +priceReg[0];
                 if (price > 1980 && price < 2025) { continue; }
                 if (price < 1000) { continue; }
-                if (price < this.priceRange[0] || price > this.priceRange[1]) {
+                if (price < this.price[0] || price > this.price[1]) {
                     return {
                         valid: false,
                         notes: ['' + price],
@@ -61,9 +61,9 @@ export class Filter {
     }
 
     public run (text:string) : FilterResult {
-        const filterKeys = Object.keys(this.filterText);
+        const filterKeys = Object.keys(this.text);
         for (let i = 0; i < filterKeys.length; i++) {
-            const filterObj = this.filterText[filterKeys[i]];
+            const filterObj = this.text[filterKeys[i]];
             let matched = false;
             for (const includeValue of filterObj.include) {
                 if (text.match(includeValue)) {

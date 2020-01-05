@@ -2,8 +2,9 @@ import cheerio from 'cheerio';
 import axios from 'axios';
 import { Filter } from '../filter';
 import { Site } from './type';
-import { Db, WriteSpec } from '../db';
-import { sleep, getUserAgent } from '../util';
+import { Db } from '../db';
+import { sleep } from '../utils/sleep';
+import { getUserAgent } from '../utils/user-agent';
 
 export class Douban implements Site {
     public origin = 'https://www.douban.com';
