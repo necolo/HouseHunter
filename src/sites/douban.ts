@@ -67,7 +67,8 @@ export class Douban implements Site {
 
     public async run () {
         for (let i = 0; i < this.paths.length; i ++) {
-            const data = await this._request(`${this.origin}${this.paths[i]}`);
+            const url = `${this.origin}${this.paths[i]}`;
+            const data = await this._request(url);
             const $list = cheerio.load(data)
             $list('.olt tbody tr').each(async (i, el) => {
                 if (i === 0) { return; }
@@ -76,7 +77,7 @@ export class Douban implements Site {
                 const title = titleEl.find('a').attr('title') || '';
                 const filter1 = this._filter.run(title);
 
-                if (!href) { return; }
+                if (!href) { throw url + ' ' + data; }
                 if (Db.recorded('include', href)) { return; }
                 if (Db.recorded('exclude', href)) { return; }
 

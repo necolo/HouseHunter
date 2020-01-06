@@ -24,7 +24,7 @@ router.get(/\/[index.html]+/, (ctx, next) => {
 });
 
 
-router.get('/search', (ctx, next) => {
+router.get('/search', async (ctx, next) => {
     try {
         const filterData = JSON.parse(ctx.query.filter);
         const sites = JSON.parse(ctx.query.sites);
@@ -38,7 +38,7 @@ router.get('/search', (ctx, next) => {
         const resData = {};
         if (sites.indexOf('douban') >= 0) {
             const douban = new Douban(filter);
-            douban.run();
+            await douban.run();
             resData['douban'] = Db.read('include', Date.now() - inTime);
         }
 
@@ -46,6 +46,8 @@ router.get('/search', (ctx, next) => {
         ctx.res.end(JSON.stringify(resData));
     } catch (e) {
         console.log(e);
+        ctx.res.writeHead(400);
+        ctx.res.end(e);
     }
 });
 
