@@ -1,8 +1,9 @@
-type FilterText = {
-    [type:string]:{
-        exclude: string[],
-        include: string[],
-    }
+export type FilterItem = {
+    exclude: string[],
+    include: string[]
+}
+export type FilterItems = {
+    [type:string]:FilterItem;
 }
 
 export type FilterResult = {
@@ -12,7 +13,7 @@ export type FilterResult = {
 
 export class Filter {
     public price = [4000, 6500];
-    public text:FilterText = {
+    public text:FilterItems = {
         rooms: {
             exclude: ['一房', '1房', '一居', '1居', '单间', '一室'],
             include: ['两房', '2房', '二居', '两居', '2居', '二房'],
@@ -30,6 +31,23 @@ export class Filter {
             ],
             include: ['福田', '石厦', '景田', '莲花', '梅林', '上沙', '下沙', '五和'],
         },
+    }
+
+    public setPrice (price:number[]) {
+        this.price[0] = price[0];
+        this.price[1] = price[1];
+    }
+
+    public setText (text:FilterItems) {
+        this.text = {};
+        const textKeys = Object.keys(text);
+        for (let i = 0; i < textKeys.length; i++) {
+            const key = textKeys[i];
+            this.text[key] = {
+                exclude: text[key].exclude.slice(),
+                include: text[key].include.slice(),
+            };
+        }
     }
 
     private filterPrice (text:string) : FilterResult {
@@ -90,5 +108,20 @@ export class Filter {
             valid: true,
             notes: [''],
         };
+    }
+
+    public toJSON () {
+        const result:{[name:string]:any} = {};
+        result.price = this.price.slice();
+        result.text = {} as FilterItems;
+        const textKeys = Object.keys(this.text);
+        for (let i = 0; i < textKeys.length; i++) {
+            const key = textKeys[i];
+            result.text[key] = {
+                exclude:  this.text[key].exclude.slice(),
+                include: this.text[key].include.slice(),
+            }
+        }
+        return result;
     }
 }

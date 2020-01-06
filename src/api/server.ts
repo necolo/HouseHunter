@@ -8,23 +8,23 @@ import { Filter } from '../filter';
 import { Db } from '../db';
 import path from 'path';
 
+const BUILD_DIR = path.join(__dirname, '../../build');
+
 const app = new Koa();
 const router = new Router();
 
-router.get('/', (ctx, next) => {
+router.get(/\/[index.html]+/, (ctx, next) => {
     ctx.res.writeHead(200, {
         'Content-Type': 'text/html',
         'Cache-Control': 'private, no-cache, no-store, must-revalidate',
         'Expire': '-1',
         'Pragma': 'no-cache',
     });
-    fs.createReadStream(path.join(__dirname, '../../index.html')).pipe(ctx.res);
+    fs.createReadStream(path.join(BUILD_DIR, 'index.html')).pipe(ctx.res);
 });
+
+
 router.get('/search', (ctx, next) => {
-    ctx.res.setHeader('Access-Control-Allow-Origin', ctx.headers && ctx.headers.origin || '*');
-    ctx.res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    ctx.res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    ctx.res.setHeader('Access-Control-Allow-Credentials', 'true');
     try {
         const filterData = JSON.parse(ctx.query.filter);
         const sites = JSON.parse(ctx.query.sites);
@@ -50,9 +50,14 @@ router.get('/search', (ctx, next) => {
 });
 
 app
+    .use(async (ctx, next) => {
+        console.log(ctx.method + ': ' + ctx.path);
+        console.log(ctx.query);
+        await next();
+    })
     .use(router.routes())
     .use(router.allowedMethods())
-    .use(serve(__dirname, '../../build/'))
+    .use(serve(BUILD_DIR))
 ;
 
 const PORT = 3001;

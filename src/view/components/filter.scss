@@ -1,0 +1,26 @@
+.filter-container {
+    width: 100%;
+    .desc {
+        color: white;
+        text-align: right;
+    }
+    .item {
+        margin: 5px 0;
+        width: 100%;
+        color: white;
+        .title {
+            color: white;
+        }
+    }
+    .content {
+        display: flex;
+        align-items: center;
+        .exclude {
+            margin-left: 16px;
+        }
+    }
+    .reset {
+        margin-top: 16px;
+        float: right;
+    }
+}

@@ -1,0 +1,23 @@
+// @import "~bulma/sass/utilities/_all.sass";
+// @import "~bulma/sass/elements/button.sass";
+// @import "~bulma/sass/form/input.sass";
+@import "~bulma/bulma.sass";
+
+.app {
+    padding: 10px;
+    .menu {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        line-height: 30px;
+
+        .input {
+            width: 60px;
+        }
+    }
+    .modal {
+        .modal-content {
+            width: 90%;
+        }
+    }
+}

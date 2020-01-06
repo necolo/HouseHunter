@@ -77,8 +77,8 @@ function commonConfig(devMode) {
                         devMode ? {
                             loader: 'style-loader',
                             options: {
-                                singleton: true,
-                            }
+                                injectType: 'singletonStyleTag',
+                            },
                         } : MiniCssExtractPlugin.loader,
                         {
                             loader: 'css-loader',
@@ -93,19 +93,6 @@ function commonConfig(devMode) {
                     ]
                 },
                 {
-                    test: /\.less$/,
-                    use: [
-                        'style-loader',
-                        'css-loader',
-                        {
-                            loader: 'less-loader',
-                            options: {
-                                javascriptEnabled: true,
-                            }
-                        },
-                    ],
-                },
-                {
                     test: /\.css$/,
                     use: ['style-loader', 'css-loader'],
                 },
@@ -117,7 +104,7 @@ function commonConfig(devMode) {
                             name: "[name]-[hash:5].min.[ext]",
                             limit: 8192,
                             publicPath: "assets",
-                            outputPath: "dist/assets",
+                            outputPath: "build/assets",
                         }
                     }, ]
                 },
