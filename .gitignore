@@ -3,6 +3,7 @@ yarn-error.log
 db.json
 result.html
 /build
+config.ts
 
 # Logs
 logs

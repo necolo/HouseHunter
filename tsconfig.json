@@ -6,7 +6,6 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "jsx": "react",
     "lib": ["dom", "es6", "es2015", "es5"],
     "module": "commonjs",
     "moduleResolution": "node",
@@ -22,7 +21,7 @@
     "removeComments": true,
     "sourceMap": true,
     "strict": true,
-    "target": "es5",
+    "target": "es6",
     "resolveJsonModule": true,
     "esModuleInterop": true
   },
@@ -32,11 +31,6 @@
         "../types/*"
       ]
   },
-  "exclude": [
-    "src/alone-servers",
-    "src/bin",
-    "src/storybook",
-    "build",
-    "node_modules"
-  ]
+  "include": ["./src/**/*"],
+  "exclude": ["node_modules"]
 }
